@@ -2,7 +2,7 @@ import i18next from 'i18next'
 import * as yup from 'yup'
 import updateUi from './view.js'
 import axios from 'axios';
-// import axios from 'axios';
+import _ from 'lodash'
 
 // const i18nextInstance = i18next.createInstance();
 // i18nextInstance.then((i18nextInstance) =>  i18nextInstance.init({
@@ -29,41 +29,57 @@ const initialState = {
    },
 };
 
-const urlSchema = yup.object({
-  url: yup.string().url('Ссылка должна быть валидным URL').notOneOf(initialState.stateData.feeds, 'Такая ссылка уже есть')
-})
 
 const inputField = document.querySelector('#url-input');
 const form = document.querySelector('.rss-form');
 const feedback = document.querySelector('.feedback');
 const submitButton = form.querySelector('button');
 
-const watch = updateUi(initialState, inputField, feedback, submitButton);
+const watch = updateUi(initialState, inputField, feedback, submitButton, form);
 
 // проверяем валидность ссылки
-const isValid = (field) => {
+const validate = (field, feeds) => {
+  const urlSchema = yup.object({
+    url: yup.string().url().notOneOf(feeds)
+  });
   return urlSchema.validate({url: field})
     .then(() => null) 
     .catch((e) => e.message)
 }
 
- const loadRss = (url) => {
+const parseRss = (data) => {
+  const parser = new DOMParser();
+  return parser.parseFromString(data, "application/xml");
+}
+
+ const loadRss = (url, watchedState) => {
+  let id = _.uniqueId();
   return axios(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
-  .then(response => response.data)
-  .catch(error => error.message)
+  .then(response => response.data.contents)
+  .then(data => parseRss(data))
+  .then((document) => {
+    const feed = {id, url};
+    watchedState.stateData.feeds.push(feed);
+    return document.querySelectorAll('item')
+  })
+  .then(items => items.forEach(item => {
+    const title = item.querySelector('title');
+    const description = item.querySelector('description');
+    const link = item.querySelector('link');
+    const post = {id, postId: _.uniqueId(), title: title.textContent, description: description.textContent, link: link.textContent}
+    watchedState.stateData.posts.push(post);
+    watchedState.loadingProcess = { status: 'success'}
+  console.log(post)}))
+  .catch(error => {
+    watchedState.loadingProcess = {status: 'failed', error: error.message}
+  } )
 };
-
-// const parseRss = (data) => {
-//   const parser = new DOMParser();
-//   const rssData = parser.parseFromString(data,"text/xml");
-//   console.log(rssData);
-// }
-
 
 form.addEventListener('submit',  (e) => {
   e.preventDefault();
   const inputValue = e.target.querySelector('input').value;
-  isValid(inputValue).then((err) => {
+  const urls = watch.stateData.feeds.map((feed) => feed.url);
+  validate(inputValue, urls).then((err) => {
     if (err) {
      watch.formState = { isValid: false, error: err};
     } 
@@ -71,7 +87,8 @@ form.addEventListener('submit',  (e) => {
       watch.formState = { isValid: true, error: ''};
       watch.loadingProcess = { status: 'loading'}
       // вызываем загрузку, парсим данные и параллельно проверяем валидность rss, если rss
-      loadRss(inputValue).then(data => console.log(data));
+      loadRss(inputValue, watch);
+      console.log(watch)
     }
   });
 });

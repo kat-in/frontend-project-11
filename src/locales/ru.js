@@ -1,9 +1,5 @@
 export default {
   translation: {
-    title: 'RSS агрегатор',
-    placeholderText: 'Ссылка Rss',
-    slogan: 'Начните читать RSS сегодня! Это легко, это красиво.'
-    button: 'Добавить',
     posts: 'Посты',
     feeds: 'Фиды',
     feedback: {

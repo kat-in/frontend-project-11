@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 
 
-const updateUi = (state, inputField, feedback, button) => {
+const updateUi = (state, inputField, feedback, button, form) => {
   const watchedState = onChange(state, (path) => {
     if (path === 'formState') {
       if (!state[path].isValid) {
@@ -22,12 +22,18 @@ const updateUi = (state, inputField, feedback, button) => {
         button.setAttribute('disabled', true)
       }
       if (state[path].status === 'success') {
-        inputField.setAttribute('disabled', false);
-        inputField.textContent = '';
+        inputField.removeAttribute('disabled');
+         button.removeAttribute('disabled');
+        form.reset();
         inputField.focus();
-        button.setAttribute('disabled', false);
         feedback.textContent = 'RSS успешно загружен';
-        feedback.classList.add('text-success');
+        feedback.classList.remove('text-danger');
+      }
+       if (state[path].status === 'failed') {
+        inputField.removeAttribute('disabled');
+        button.removeAttribute('disabled');
+        feedback.textContent = 'jjjj';
+        feedback.classList.add('text-danger');
       }
     }
   })
