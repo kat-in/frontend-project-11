@@ -59,7 +59,7 @@ const parseRss = (data, i18n) => {
 
 const loadRss = (url, state, i18n) => {
   let id = _.uniqueId();
-  return axios(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+  return axios(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
     .then(response => response.data.contents)
     .then(data => parseRss(data, i18n))
     .then((document) => {
