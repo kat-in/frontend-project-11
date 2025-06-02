@@ -1,18 +1,16 @@
-import i18next from 'i18next'
-import * as yup from 'yup'
-import updateUi from './view.js'
+import i18next from 'i18next';
+import * as yup from 'yup';
+import updateUi from './view.js';
 import axios from 'axios';
-import _ from 'lodash'
+import _ from 'lodash';
+import ru from './locales/index.js';
 
-// const i18nextInstance = i18next.createInstance();
-// i18nextInstance.then((i18nextInstance) =>  i18nextInstance.init({
-//     // конфигурация i18next
-//     lng: 'ru',
-//     debug: true,
-//     resources: {
-//       ru,
-//     },
-//   }))
+const i18nextInstance = i18next.createInstance();
+i18nextInstance.init({
+  lng: 'ru',
+  debug: false,
+  resources: ru,
+}).then((t) => { t('key') });
 
 const initialState = {
   stateData: {
@@ -22,13 +20,12 @@ const initialState = {
   formState: {
     isValid: null,
     error:'',
-   },
+  },
   loadingProcess: {
     status: 'idle', // success, failed, loading, idle - начальный статус 
     error: '', // code error
-   },
+  },
 };
-
 
 const inputField = document.querySelector('#url-input');
 const form = document.querySelector('.rss-form');
@@ -38,7 +35,8 @@ const submitButton = form.querySelector('button');
 const watch = updateUi(initialState, inputField, feedback, submitButton, form);
 
 // проверяем валидность ссылки
-const validate = (field, feeds) => {
+const validate = (field, feeds, ) => {
+  yup.setLocale(ru.translation.validation.yup);
   const urlSchema = yup.object({
     url: yup.string().url().notOneOf(feeds)
   });
