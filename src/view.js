@@ -37,7 +37,7 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
         feedback.classList.add('text-danger');
       }
       break;
-    case 'stateData.feeds':
+    case 'stateData.feeds': {
       feeds.textContent = '';
       const feedsSectionTitle = document.createElement('h1');
       feedsSectionTitle.textContent = i18n.t('feeds');
@@ -51,7 +51,8 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
         feeds.append(feedTitle, feedDescription);
       });  
       break;
-    case 'stateData.posts':
+    }
+    case 'stateData.posts': {
       posts.textContent = '';
       const postsSectionTitle = document.createElement('h1');
       postsSectionTitle.textContent = i18n.t('posts');
@@ -79,6 +80,7 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
         posts.append(postItem);
       });  
       break;
+    }
     default: 
       throw new Error(`Неизвестный путь ${path}`);  
     }
