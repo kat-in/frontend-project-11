@@ -58,6 +58,7 @@ const parseRss = (data, i18n) => {
 }
 
 const loadRss = (url, state, i18n) => {
+  axios.defaults.timeout = 10000;
   let id = _.uniqueId();
   return axios(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
     .then(response => response.data.contents)
@@ -76,13 +77,40 @@ const loadRss = (url, state, i18n) => {
       const link = item.querySelector('link');
       const post = {feedId: id, postId: _.uniqueId(), title: title.textContent, description: description.textContent, link: link.textContent}
       state.stateData.posts.push(post);
-      console.log(post)}))
+      }))
     .catch(error => {
-      state.loadingProcess = { status: 'failed', error: error.message }
+      if (error.message === 'Network Error') {
+        state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') }
+      }
+       state.loadingProcess = { status: 'failed', error: error.message }
     })
 };
 
+const updateRss = (state, i18n) => {
+  axios.defaults.timeout = 10000;
+    state.stateData.feeds.forEach((feed) => {
+      axios(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
+      .then(response => response.data.contents)
+      .then(data => parseRss(data, i18n))
+      .then((document) => document.querySelectorAll('item'))
+      .then((items) => items.forEach(item => {
+        const postTitle = item.querySelector('title');
+        const oldPosts = state.stateData.posts.filter((post)=> post.feedId === feed.id)
+          .map(post => post.title);
+        const newPost = !oldPosts.includes(postTitle.textContent)? item : null;
+        if (newPost !== null) {
+          const description = item.querySelector('description');
+          const link = item.querySelector('link');
+          const post = {feedId: feed.id, postId: _.uniqueId(), title: postTitle.textContent, description: description.textContent, link: link.textContent}
+          state.stateData.posts = [state.stateData.posts, ...post];
+        }   
+      }))
+      .catch(error => console.log(error.message))
+    })
+  setTimeout(() => updateRss(state, i18n), 5000);
+}
 
+updateRss(watchedState, i18nextInstance);
 
 form.addEventListener('submit',  (e) => {
   e.preventDefault();
@@ -91,6 +119,7 @@ form.addEventListener('submit',  (e) => {
   validate(inputValue, urls).then((err) => {
     if (err) {
       watchedState.formState = { isValid: false, error: err};
+      return;
     } 
     else  {
       watchedState.formState = { isValid: true, error: ''};
