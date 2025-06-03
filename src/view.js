@@ -56,7 +56,6 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
       posts.textContent = '';
       const postsSectionTitle = document.createElement('h1');
       postsSectionTitle.textContent = i18n.t('posts');
-      posts.appendChild(postsSectionTitle);
       console.log(state.stateData.posts)
       state.stateData.posts.forEach((post) => {
         const postItem = document.createElement('div');
@@ -77,8 +76,9 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
         linkItem.appendChild(postLink);
         buttonItem.appendChild(button);
         postItem.append(linkItem, buttonItem);
-        posts.append(postItem);
+        posts.prepend(postItem);
       });  
+      posts.prepend(postsSectionTitle);
       break;
     }
     default: 
