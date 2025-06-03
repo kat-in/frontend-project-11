@@ -1,33 +1,5 @@
 import onChange from 'on-change';
 
-const renderPosts = (posts, i18n) => {
-  posts.textContent = '';
-  const postsSectionTitle = document.createElement('h1');
-  postsSectionTitle.textContent = i18n.t('posts');
-  posts.appendChild(postsSectionTitle);
-  watchPosts.stateData.posts.forEach((post) => {
-    const postItem = document.createElement('div');
-    postItem.classList.add('row');
-    const linkItem = document.createElement('p');
-    linkItem.classList.add('col-sm-8')
-    const buttonItem = document.createElement('p');
-    buttonItem.classList.add('col-sm-2')
-    const postLink = document.createElement('a');
-    const button = document. createElement('button');
-    button.textContent = i18n.t('viewButton')
-    button.type = 'button';
-    button.classList.add('btn', 'btn-outline-primary')
-    button.setAttribute('data-toggle', 'modal');
-    button.setAttribute('data-target', 'modal');
-    postLink.setAttribute('href', post.link);
-    postLink.textContent = post.title;
-    linkItem.appendChild(postLink);
-    buttonItem.appendChild(button);
-    postItem.append(linkItem, buttonItem);
-    posts.append(postItem);
-  })
-};
-
 const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n) => {
   const watchedState = onChange(state, (path) => {
     switch (path) {
