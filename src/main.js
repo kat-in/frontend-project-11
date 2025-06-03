@@ -102,7 +102,7 @@ const updateRss = (state, i18n) => {
           const description = item.querySelector('description');
           const link = item.querySelector('link');
           const post = {feedId: feed.id, postId: _.uniqueId(), title: postTitle.textContent, description: description.textContent, link: link.textContent}
-          state.stateData.posts = [state.stateData.posts, ...post];
+          state.stateData.posts = [...state.stateData.posts, post];
         }   
       }))
       .catch(error => console.log(error.message))
