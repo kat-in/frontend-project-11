@@ -7,7 +7,7 @@ export default {
       yup: {
         mixed: {
           default: 'Некорректное значение',
-          notOneOf: 'Такая ссылка уже есть',
+          notOneOf: 'RSS уже существует',
         },
         string: {
           url: 'Ссылка должна быть валидным URL',
