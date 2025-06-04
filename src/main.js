@@ -17,6 +17,13 @@ const initialState = {
     feeds:[],
     posts:[],
   },
+  ui: {
+    modal: {
+      title: '',
+      description: '',
+    },
+    viewedPosts: new Set([]),
+  },
   formState: {
     isValid: null,
     error:'',
@@ -88,7 +95,7 @@ const loadRss = (url, state, i18n) => {
 
 const updateRss = (state, i18n) => {
   axios.defaults.timeout = 10000;
-    state.stateData.feeds.forEach((feed) => {
+   const updateUrls = state.stateData.feeds.map((feed) => {
       axios(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
       .then(response => response.data.contents)
       .then(data => parseRss(data, i18n))
@@ -103,16 +110,24 @@ const updateRss = (state, i18n) => {
           const link = item.querySelector('link');
           const post = {feedId: feed.id, postId: _.uniqueId(), title: postTitle.textContent, description: description.textContent, link: link.textContent}
           state.stateData.posts.push(post);
-          // state.loadingProcess = { status: 'success' };
         }   
       }))
-
       .catch(error => console.log(error.message))
     })
-  setTimeout(() => updateRss(state, i18n), 5000);
+  Promise.all(updateUrls).then(() => { setTimeout(() => updateRss(state, i18n), 5000) });
 }
 
 updateRss(watchedState, i18nextInstance);
+
+posts.addEventListener('click', (e) => {
+  if (!e.target.dataset.bsToggle) {
+    return;
+  }
+  const postTitle = e.target.closest('div').querySelector('a').textContent;
+  const post = watchedState.stateData.posts.find((post) => post.title === postTitle);
+  watchedState.ui.viewedPosts = watchedState.ui.viewedPosts.add(post.postId);
+  watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
+})
 
 form.addEventListener('submit',  (e) => {
   e.preventDefault();
@@ -128,9 +143,10 @@ form.addEventListener('submit',  (e) => {
       watchedState.loadingProcess = { status: 'loading'}
       // вызываем загрузку, парсим данные и параллельно проверяем валидность rss, если rss
       loadRss(inputValue, watchedState, i18nextInstance);
-      console.log(watchedState);
     }
   });
 });
+
+
 
 
