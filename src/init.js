@@ -89,11 +89,16 @@ const loadRss = (url, state, i18n) => {
         const post = {feedId: id, postId: _.uniqueId(), title: title.textContent, description: description.textContent, link: link.textContent}
         state.stateData.posts.push(post);
       })})
-    .catch(error => {
-      if (error.message === 'Network Error') {
-        state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') }
+    .catch((e) => {
+      if (e.name === 'Error') {
+          state.loadingProcess = { status: 'failed', error: i18n.t('validation.invalidRss') };
       }
-       state.loadingProcess = { status: 'failed', error: error.message }
+      if (e.name ==='AxiosError') {
+        state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') };
+      }
+      else {
+        state.loadingProcess = { status: 'failed', error: error.message };
+      }
     })
 };
 
