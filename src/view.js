@@ -8,16 +8,16 @@ const renderPosts = (posts, state, i18n) => {
     const postItem = document.createElement('div');
     postItem.classList.add('row');
     const linkItem = document.createElement('p');
+    linkItem.classList.add('col-sm-8')
     const buttonItem = document.createElement('p');
     buttonItem.classList.add('col-sm-2')
     const postLink = document.createElement('a');
     postLink.target = '_blank';
     if (state.ui.viewedPosts.has(post.postId)) {
-      linkItem.classList.remove('fw-bold', 'text-primary');
-      linkItem.classList.add('fw-normal', 'col-sm-8', 'text-secondary');
-      postLink.classList.add('text-secondary')
+      postLink.classList.remove('fw-bold', 'text-primary');
+      postLink.classList.add('text-secondary', 'fw-normal')
     } else {
-      linkItem.classList.add('fw-bold', 'col-sm-8')
+      postLink.classList.add('fw-bold', 'text-primary');
     }
     const button = document. createElement('button');
     button.textContent = i18n.t('viewButton')
