@@ -35,7 +35,9 @@ const renderPosts = (posts, state, i18n) => {
     posts.prepend(postsSectionTitle);
 };
 
-const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n) => {
+const updateUi = (state, elements, i18n) => {
+  const { inputField, form, feedback, submitButton, feeds, posts } = elements;
+
   const watchedState = onChange(state, (path) => {
     switch (path) {
       case 'formState':
@@ -54,11 +56,11 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
       case 'loadingProcess':   
         if (state[path].status === 'loading') {
           inputField.setAttribute('disabled', true);
-          button.setAttribute('disabled', true)
+          submitButton.setAttribute('disabled', true)
         }
         if (state[path].status === 'success') {
           inputField.removeAttribute('disabled');
-          button.removeAttribute('disabled');
+          submitButton.removeAttribute('disabled');
           form.reset();
           inputField.focus();
           feedback.textContent = 'RSS успешно загружен';
@@ -67,7 +69,7 @@ const updateUi = (state, inputField, feedback, button, form, feeds, posts, i18n)
         }
         if (state[path].status === 'failed') {
           inputField.removeAttribute('disabled');
-          button.removeAttribute('disabled');
+          submitButton.removeAttribute('disabled');
           feedback.textContent = state[path].error;
           feedback.classList.add('text-danger');
         }
