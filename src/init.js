@@ -97,7 +97,7 @@ const loadRss = (url, state, i18n) => {
         state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') };
       }
       else {
-        state.loadingProcess = { status: 'failed', error: error.message };
+        state.loadingProcess = { status: 'failed', error: e.message };
       }
     })
 };
