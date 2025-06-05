@@ -17,7 +17,7 @@ const renderPosts = (posts, state, i18n) => {
       postLink.classList.remove('fw-bold', 'text-primary');
       postLink.classList.add('text-secondary', 'fw-normal')
     } else {
-      postLink.classList.add('fw-bold', 'text-primary');
+      postLink.classList.add('fw-bold');
     }
     const button = document. createElement('button');
     button.textContent = i18n.t('viewButton')
