@@ -25,8 +25,8 @@ export default [
       '@stylistic': stylistic,
     },
     rules: {
-       // Разрешить только 1 оператор на строку (по умолчанию)
-       '@stylistic/max-statements-per-line': ['error', { max: 1 }],
+      // Разрешить только 1 оператор на строку (по умолчанию)
+      '@stylistic/max-statements-per-line': ['error', { max: 1 }],
       // Запрет пробелов в конце строк
       '@stylistic/no-trailing-spaces': 'error',
 

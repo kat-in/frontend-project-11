@@ -119,7 +119,9 @@ const init = () => {
         })
         .catch(error => console.log(error.message))
     })
-    Promise.all(updateUrls).finally(() => { setTimeout(() => updateRss(state, i18n), 5000) })
+    Promise.all(updateUrls).finally(() => {
+      setTimeout(() => updateRss(state, i18n), 5000)
+    })
   }
 
   i18nextInstance.init({
