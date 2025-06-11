@@ -18,4 +18,4 @@ export default {
       success: 'RSS успешно загружен',
     },
   },
-};
+}

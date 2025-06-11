@@ -1,7 +1,7 @@
 // eslint.config.js
-import js from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin';
-import globals from 'globals';
+import js from '@eslint/js'
+import stylistic from '@stylistic/eslint-plugin'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -28,8 +28,8 @@ export default [
 
       '@stylistic/indent': ['error', 2],
       '@stylistic/quotes': ['error', 'single'],
-      '@stylistic/semi': ['error', 'always'],
+      '@stylistic/semi': ['error', 'never'],
       // ...
     }
   }
-];
+]
