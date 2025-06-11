@@ -10,26 +10,39 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-      }
-    }
+      },
+    },
   },
-  
+
   {
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
-    ]
+    ],
   },
   {
     plugins: {
-      '@stylistic': stylistic
+      '@stylistic': stylistic,
     },
     rules: {
+      // Запрет пробелов в конце строк
+      '@stylistic/no-trailing-spaces': 'error',
 
+      // Висячие запятые для многострочных структур
+      '@stylistic/comma-dangle': ['error', {
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
+        functions: 'never',
+      }],
+
+      // Обязательная новая строка в конце файла
+      '@stylistic/eol-last': ['error', 'always'],
       '@stylistic/indent': ['error', 2],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': ['error', 'never'],
       // ...
-    }
-  }
+    },
+  },
 ]
