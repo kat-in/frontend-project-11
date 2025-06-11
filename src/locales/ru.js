@@ -8,6 +8,7 @@ export default {
         mixed: {
           default: 'Некорректное значение',
           notOneOf: 'RSS уже существует',
+          required: 'Не должно быть пустым',
         },
         string: {
           url: 'Ссылка должна быть валидным URL',

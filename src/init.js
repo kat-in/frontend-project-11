@@ -55,7 +55,7 @@ const init = () => {
   const proxy = url => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`
 
   // функция загрузки постов
-  const loadPosts = (items, feedId, state) => {
+  const loadPosts = (items, feedId, state, isUpdate = false) => {
     items.forEach((item) => {
       const title = item.querySelector('title')
       const description = item.querySelector('description')
@@ -72,7 +72,7 @@ const init = () => {
           description: description.textContent,
           link: link.textContent,
         }
-        state.stateData.posts.push(post)
+        isUpdate ? state.stateData.posts.unshift(post) : state.stateData.posts.push(post)
       }
     })
   }
@@ -115,11 +115,11 @@ const init = () => {
           const data = response.data.contents
           const document = parseRss(data, i18n)
           const items = document.querySelectorAll('item')
-          loadPosts(items, feed.id, state)
+          loadPosts(items, feed.id, state, true)
         })
         .catch(error => console.log(error.message))
     })
-    Promise.all(updateUrls).finally(() => {
+    Promise.allSettled(updateUrls).finally(() => {
       setTimeout(() => updateRss(state, i18n), 5000)
     })
   }

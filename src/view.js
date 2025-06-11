@@ -2,7 +2,7 @@ import onChange from 'on-change'
 
 const renderPosts = (posts, state, i18n) => {
   posts.textContent = ''
-  const postsSectionTitle = document.createElement('h1')
+  const postsSectionTitle = document.createElement('h2')
   postsSectionTitle.textContent = i18n.t('posts')
   state.stateData.posts.forEach((post) => {
     const postItem = document.createElement('div')
@@ -26,7 +26,7 @@ const renderPosts = (posts, state, i18n) => {
     postLink.setAttribute('href', post.link)
     postLink.textContent = post.title
     postItem.append(postLink, button)
-    posts.prepend(postItem)
+    posts.append(postItem)
   })
   posts.prepend(postsSectionTitle)
 }
@@ -72,9 +72,9 @@ const updateUi = (state, elements, i18n) => {
         break
       case 'stateData.feeds': {
         feeds.textContent = ''
-        const feedsSectionTitle = document.createElement('h1')
+        const feedsSectionTitle = document.createElement('h2')
         feedsSectionTitle.textContent = i18n.t('feeds')
-        feeds.appendChild(feedsSectionTitle)
+        feeds.append(feedsSectionTitle)
         state.stateData.feeds.forEach((feed) => {
           const feedDescription = document.createElement('p')
           feedDescription.classList.add('text-secondary')
