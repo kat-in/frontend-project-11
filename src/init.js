@@ -44,7 +44,7 @@ const init = () => {
   const validate = (field, feeds, locale) => {
     yup.setLocale(locale);
     const urlSchema = yup.object({
-      url: yup.string().url().notOneOf(feeds)
+      url: yup.string().required().url().notOneOf(feeds)
     });
     return urlSchema.validate({url: field})
     .then(() => null) 
@@ -119,27 +119,27 @@ const init = () => {
       })
       .catch(error => console.log(error.message))
     })
-    Promise.all(updateUrls).then(() => { setTimeout(() => updateRss(state, i18n), 5000) })
-      .catch(error => console.log(error.message));
+    Promise.all(updateUrls).finally(() => { setTimeout(() => updateRss(state, i18n), 5000) })
   }
 
-  Promise.resolve(
-    i18nextInstance.init({
+
+  i18nextInstance.init({
       lng: 'ru',
       debug: false,
       resources: { ru },
     })
-  ).then(() => { 
+  .then(() => { 
     const watchedState = updateUi(initialState, elements, i18nextInstance);
     updateRss(watchedState, i18nextInstance);
 
     elements.posts.addEventListener('click', (e) => {
-      if (!e.target.dataset.bsToggle || !e.target.dataset.postId) return;
-        const postTitle = e.target.dataset.postId;
-        const post = watchedState.stateData.posts.find((post) => post.title === postTitle);
+      console.log(e.target)
+      if (!e.target.dataset.bsTarget || !e.target.dataset.postId) return;
+        const postId = e.target.dataset.postId;
+        const post = watchedState.stateData.posts.find((post) => post.postId === postId);
+        // if (!post) return; 
         watchedState.ui.viewedPosts.add(post.postId);
         watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
-
     });
 
     elements.form.addEventListener('submit',  (e) => {
