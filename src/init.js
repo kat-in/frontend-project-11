@@ -136,11 +136,12 @@ const init = () => {
     elements.posts.addEventListener('click', (e) => {
       if (!e.target.dataset.bsToggle) {
         return;
+      } else {
+        const postTitle = e.target.dataset.id;
+        const post = watchedState.stateData.posts.find((post) => post.title === postTitle);
+        watchedState.ui.viewedPosts = watchedState.ui.viewedPosts.add(post.postId);
+        watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
       }
-      const postTitle = e.target.dataset.id;
-      const post = watchedState.stateData.posts.find((post) => post.title === postTitle);
-      watchedState.ui.viewedPosts = watchedState.ui.viewedPosts.add(post.postId);
-      watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
     });
 
     elements.form.addEventListener('submit',  (e) => {
@@ -156,7 +157,6 @@ const init = () => {
         else  {
           watchedState.formState = { isValid: true, error: ''};
           watchedState.loadingProcess = { status: 'loading'}
-          // вызываем загрузку, парсим данные и параллельно проверяем валидность rss, если rss
           loadRss(inputValue, watchedState, i18nextInstance);
         }
       });
