@@ -25,7 +25,7 @@ const renderPosts = (posts, state, i18n) => {
     button.classList.add('btn', 'btn-outline-primary')
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
-    button.setAttribute('data-post-id', post.postId);
+    button.setAttribute('data-id', post.postId); 
     postLink.setAttribute('href', post.link);
     postLink.textContent = post.title;
     linkItem.append(postLink);

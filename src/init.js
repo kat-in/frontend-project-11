@@ -133,9 +133,8 @@ const init = () => {
     updateRss(watchedState, i18nextInstance);
 
     elements.posts.addEventListener('click', (e) => {
-      console.log(e.target)
-      if (!e.target.dataset.bsTarget || !e.target.dataset.postId) return;
-        const postId = e.target.dataset.postId;
+      if (!e.target.dataset.bsToggle) return;
+        const postId = e.target.dataset.id;
         const post = watchedState.stateData.posts.find((post) => post.postId === postId);
         // if (!post) return; 
         watchedState.ui.viewedPosts.add(post.postId);
