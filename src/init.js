@@ -134,14 +134,12 @@ const init = () => {
     updateRss(watchedState, i18nextInstance);
 
     elements.posts.addEventListener('click', (e) => {
-      if (!e.target.dataset.bsToggle) {
-        return;
-      } else {
-        const postTitle = e.target.dataset.id;
+      if (!e.target.dataset.bsToggle || !e.target.dataset.postId) return;
+        const postTitle = e.target.dataset.postId;
         const post = watchedState.stateData.posts.find((post) => post.title === postTitle);
-        watchedState.ui.viewedPosts = watchedState.ui.viewedPosts.add(post.postId);
+        watchedState.ui.viewedPosts.add(post.postId);
         watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
-      }
+
     });
 
     elements.form.addEventListener('submit',  (e) => {
