@@ -12,7 +12,7 @@ const renderPosts = (posts, state, i18n) => {
     // const buttonItem = document.createElement('p');
     // buttonItem.classList.add('col-sm-2')
     const postLink = document.createElement('a');
-    postLink.classList.add('col-sm-8')
+    // postLink.classList.add('col-sm-8')
     postLink.target = '_blank';
     if (state.ui.viewedPosts.has(post.postId)) {
       postLink.classList.remove('fw-bold', 'text-primary');
@@ -24,7 +24,7 @@ const renderPosts = (posts, state, i18n) => {
     button.textContent = i18n.t('viewButton')
     button.type = 'button';
     button.classList.add('btn', 'btn-outline-primary')
-     button.classList.add('col-sm-2')
+    //  button.classList.add('col-sm-2')
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.setAttribute('data-id', post.postId); 
