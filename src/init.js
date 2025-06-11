@@ -11,8 +11,8 @@ const init = () => {
   const i18nextInstance = i18next.createInstance();
   const initialState = {
     stateData: {
-      feeds:[],
-      posts:[],
+      feeds: [],
+      posts: [],
     },
     ui: {
       modal: {
@@ -23,17 +23,17 @@ const init = () => {
     },
     formState: {
       isValid: null,
-      error:'',
+      error: '',
     },
     loadingProcess: {
-     status: 'idle', // success, failed, loading, idle - начальный статус 
-     error: '', 
+      status: 'idle', // success, failed, loading, idle - начальный статус
+      error: '',
     },
-};
+  };
 
   const elements = {
     inputField: document.querySelector('#url-input'),
-    form : document.querySelector('.rss-form'),
+    form: document.querySelector('.rss-form'),
     feedback: document.querySelector('.feedback'),
     submitButton: document.querySelector('button'),
     feeds: document.querySelector('.feeds'),
@@ -44,26 +44,26 @@ const init = () => {
   const validate = (field, feeds, locale) => {
     yup.setLocale(locale);
     const urlSchema = yup.object({
-      url: yup.string().required().url().notOneOf(feeds)
+      url: yup.string().required().url().notOneOf(feeds),
     });
-    return urlSchema.validate({url: field})
-    .then(() => null) 
-    .catch((e) => e.message)
+    return urlSchema.validate({ url: field })
+      .then(() => null)
+      .catch(e => e.message);
   };
 
   // функция прокси
-  const proxy = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  const proxy = url => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   // функция загрузки постов
   const loadPosts = (items, feedId, state) => {
-    items.forEach(item => {
+    items.forEach((item) => {
       const title = item.querySelector('title');
       const description = item.querySelector('description');
       const link = item.querySelector('link');
-         
-      const oldPosts = state.stateData.posts.filter((post)=> post.feedId === feedId)
+
+      const oldPosts = state.stateData.posts.filter(post => post.feedId === feedId)
         .map(post => post.title);
-      const newPost = !oldPosts.includes(title.textContent)? item : null;
+      const newPost = !oldPosts.includes(title.textContent) ? item : null;
       if (newPost !== null) {
         const post = {
           feedId: feedId,
@@ -71,39 +71,39 @@ const init = () => {
           title: title.textContent,
           description: description.textContent,
           link: link.textContent,
-        }
+        };
         state.stateData.posts.push(post);
-      } 
+      }
     });
-  }
+  };
 
   // функция загрузки Rss
   const loadRss = (url, state, i18n) => {
     axios.defaults.timeout = 10000;
     let id = _.uniqueId();
     return axios(proxy(url))
-    .then(response => {
-      const data = response.data.contents;
-      const document = parseRss(data, i18n);
-      const feedTitle = document.querySelector('title');
-      const feedDescription = document.querySelector('description');
-      const feed = { id, url, title: feedTitle.textContent, description: feedDescription.textContent };
-      state.stateData.feeds.push(feed);
-      state.loadingProcess = { status: 'success'};
-      const items = document.querySelectorAll('item')
-      loadPosts(items, feed.id, state);
-    })
-    .catch((e) => {
-      if (e.name === 'Error') {
+      .then((response) => {
+        const data = response.data.contents;
+        const document = parseRss(data, i18n);
+        const feedTitle = document.querySelector('title');
+        const feedDescription = document.querySelector('description');
+        const feed = { id, url, title: feedTitle.textContent, description: feedDescription.textContent };
+        state.stateData.feeds.push(feed);
+        state.loadingProcess = { status: 'success' };
+        const items = document.querySelectorAll('item');
+        loadPosts(items, feed.id, state);
+      })
+      .catch((e) => {
+        if (e.name === 'Error') {
           state.loadingProcess = { status: 'failed', error: i18n.t('validation.invalidRss') };
-      }
-      if (e.name ==='AxiosError') {
-        state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') };
-      }
-      else {
-        state.loadingProcess = { status: 'failed', error: e.message };
-      }
-    }) 
+        }
+        if (e.name === 'AxiosError') {
+          state.loadingProcess = { status: 'failed', error: i18n.t('validation.networkError') };
+        }
+        else {
+          state.loadingProcess = { status: 'failed', error: e.message };
+        }
+      });
   };
 
   // функция обновления RSS
@@ -111,55 +111,53 @@ const init = () => {
     axios.defaults.timeout = 10000;
     const updateUrls = state.stateData.feeds.map((feed) => {
       axios(proxy(feed.url))
-      .then(response => {
-        const data = response.data.contents;
-        const document = parseRss(data, i18n);
-        const items = document.querySelectorAll('item');
-        loadPosts(items, feed.id, state);
-      })
-      .catch(error => console.log(error.message))
-    })
-    Promise.all(updateUrls).finally(() => { setTimeout(() => updateRss(state, i18n), 5000) })
-  }
-
+        .then((response) => {
+          const data = response.data.contents;
+          const document = parseRss(data, i18n);
+          const items = document.querySelectorAll('item');
+          loadPosts(items, feed.id, state);
+        })
+        .catch(error => console.log(error.message));
+    });
+    Promise.all(updateUrls).finally(() => { setTimeout(() => updateRss(state, i18n), 5000); });
+  };
 
   i18nextInstance.init({
-      lng: 'ru',
-      debug: false,
-      resources: { ru },
-    })
-  .then(() => { 
-    const watchedState = updateUi(initialState, elements, i18nextInstance);
-    updateRss(watchedState, i18nextInstance);
+    lng: 'ru',
+    debug: false,
+    resources: { ru },
+  })
+    .then(() => {
+      const watchedState = updateUi(initialState, elements, i18nextInstance);
+      updateRss(watchedState, i18nextInstance);
 
-    elements.posts.addEventListener('click', (e) => {
-      if (!e.target.dataset.bsToggle) return;
+      elements.posts.addEventListener('click', (e) => {
+        if (!e.target.dataset.bsToggle) return;
         const postId = e.target.dataset.id;
-        const post = watchedState.stateData.posts.find((post) => post.postId === postId);
-        // if (!post) return; 
+        const post = watchedState.stateData.posts.find(post => post.postId === postId);
+        // if (!post) return;
         watchedState.ui.viewedPosts.add(post.postId);
-        watchedState.ui.modal = { title: post.title, description: post.description, url: post.link }
-    });
+        watchedState.ui.modal = { title: post.title, description: post.description, url: post.link };
+      });
 
-    elements.form.addEventListener('submit',  (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const inputValue = formData.get('url');
-      const urls = watchedState.stateData.feeds.map((feed) => feed.url);
-      validate(inputValue, urls, ru.translation.validation.yup).then((error) => {
-        if (error) {
-          watchedState.formState = { isValid: false, error: error};
-          return;
-        } 
-        else  {
-          watchedState.formState = { isValid: true, error: ''};
-          watchedState.loadingProcess = { status: 'loading'}
-          loadRss(inputValue, watchedState, i18nextInstance);
-        }
+      elements.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const inputValue = formData.get('url');
+        const urls = watchedState.stateData.feeds.map(feed => feed.url);
+        validate(inputValue, urls, ru.translation.validation.yup).then((error) => {
+          if (error) {
+            watchedState.formState = { isValid: false, error: error };
+            return;
+          }
+          else {
+            watchedState.formState = { isValid: true, error: '' };
+            watchedState.loadingProcess = { status: 'loading' };
+            loadRss(inputValue, watchedState, i18nextInstance);
+          }
+        });
       });
     });
-  });
-}
+};
 
 export default init;
-

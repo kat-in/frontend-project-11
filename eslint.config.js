@@ -1,9 +1,35 @@
-import js from "@eslint/js";
-import globals from "globals";
-import { defineConfig } from "eslint/config";
+// eslint.config.js
+import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
+import globals from 'globals';
 
+export default [
+  js.configs.recommended,
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      }
+    }
+  },
+  
+  {
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+    ]
+  },
+  {
+    plugins: {
+      '@stylistic': stylistic
+    },
+    rules: {
 
-export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.{js,mjs,cjs}"], languageOptions: { globals: globals.browser } },
-]);
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/quotes': ['error', 'single'],
+      '@stylistic/semi': ['error', 'always'],
+      // ...
+    }
+  }
+];

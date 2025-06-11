@@ -11,11 +11,11 @@ export default {
         },
         string: {
           url: 'Ссылка должна быть валидным URL',
-        }
+        },
       },
       networkError: 'Ошибка сети',
       invalidRss: 'Ресурс не содержит валидный RSS',
       success: 'RSS успешно загружен',
     },
-  }
-}
+  },
+};

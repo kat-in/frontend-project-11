@@ -8,7 +8,7 @@ test:
 	npm test
 
 lint:
-	npx eslint . --ignore-pattern '**/assets/**'
+	npx eslint
 
 build:
 	NODE_ENV=production npm run build
